@@ -3,7 +3,8 @@
 	This question requires you to use a stack to achieve a bracket match
 */
 
-// I AM NOT DONE
+use std::collections::LinkedList;
+
 #[derive(Debug)]
 struct Stack<T> {
 	size: usize,
@@ -101,8 +102,38 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 
 fn bracket_match(bracket: &str) -> bool
 {
-	//TODO
-	true
+	let mut ret = true;
+	let mut stack = LinkedList::new();
+	for char in bracket.as_bytes().iter() {
+		if let b'[' | b'{' | b'(' = char {
+			stack.push_back(char);
+		}
+		if let b']' = char {
+			if let Some(b'[') = stack.back() {
+				stack.pop_back();
+			} else {
+				ret = false;
+				break;
+			}
+		}
+		if let b')' = char {
+			if let Some(b'(') = stack.back() {
+				stack.pop_back();
+			} else {
+				ret = false;
+				break;
+			}
+		}
+		if let b'}' = char {
+			if let Some(b'{') = stack.back() {
+				stack.pop_back();
+			} else {
+				ret = false;
+				break;
+			}
+		}
+	}
+	ret && stack.is_empty()
 }
 
 #[cfg(test)]
